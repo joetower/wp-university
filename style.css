@@ -106,7 +106,16 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	--site-global--color-tertiary-accent-dark: hsl(94, 87%, 12%);
 	--site-global--color-tertiary-accent-light: hsl(95, 81%, 87%);
 
+	--site-global--color-quaternary-accent: hsl(283, 70%, 58%);
+	--site-global--color-quaternary-accent-dark: hsl(283, 70%, 25%);
+	--site-global--color-quaternary-accent-light: hsl(283, 70%, 78%);
+
 	--site-global--color-basic-white: hsl(0, 0%, 100%);
+	--site-global--color-basic-black: hsl(0, 0%, 0%);
+	--site-global--color-basic-gray-30: hsl(0, 0%, 30%);
+	--site-global--color-basic-gray-50: hsl(0, 0%, 50%);
+	--site-global--color-basic-gray-80: hsl(0, 0%, 80%);
+	--site-global--color-basic-gray-90: hsl(0, 0%, 90%);
 
 	/* Font sizes */
 	--site-global--font-size--base: 1rem; /* 16px */
@@ -888,14 +897,18 @@ textarea {
 	}
 }
 
-.site-main .comment-navigation,
-.site-main
-.posts-navigation,
-.site-main
 .post-navigation {
-	margin: 0 0 1.5em;
+	background-color: var(--site-global--color-secondary-accent-light);
 }
 
+.post-navigation .nav-links {
+	width: 100%;
+	max-width: var(--site-width--inner);
+	margin-inline-start: auto;
+	margin-inline-end: auto;
+	padding-block-start: var(--site-global--spacing-vertical);
+	padding-block-end: var(--site-global--spacing-vertical);
+}
 .comment-navigation .nav-links,
 .posts-navigation .nav-links,
 .post-navigation .nav-links {
@@ -914,6 +927,29 @@ textarea {
 	text-align: end;
 	flex: 1 0 50%;
 }
+
+.comment-navigation .nav-previous a,
+.posts-navigation .nav-previous a,
+.post-navigation .nav-previous a,
+.comment-navigation .nav-next a,
+.posts-navigation .nav-next a,
+.post-navigation .nav-next a {
+	display: block;
+	font-weight: 600;
+	border-bottom: var(--site-global--border-width--thick) solid;
+	border-color: var(--site-global--color-primary-accent-dark);
+	padding: var(--site-global--spacing-vertical--half) var(--site-global--spacing-horizontal--half);
+}
+
+.comment-navigation .nav-previous a:hover,
+.posts-navigation .nav-previous a:hover,
+.post-navigation .nav-previous a:hover,
+.comment-navigation .nav-next a:hover,
+.posts-navigation .nav-next a:hover,
+.post-navigation .nav-next a:hover {
+	border-color: var(--site-global--color-primary-accent);
+	background-color: var(--site-global--color-primary-accent-light);
+} 
 
 /* Posts and pages
 --------------------------------------------- */
@@ -1185,7 +1221,6 @@ textarea {
 	flex-direction: column;
 	gap: 2rem;
 	padding-block-start: var(--site-global--spacing-vertical);
-	padding-block-end: var(--site-global--spacing-vertical);
 }
 
 /* Site Main Blocks */
@@ -1215,6 +1250,7 @@ textarea {
 	padding-inline-end: var(--site-global--spacing-horizontal);
 	padding-block-start: var(--site-global--spacing-vertical);
 	padding-block-end: var(--site-global--spacing-vertical);
+	background-color: var(--site-global--color-basic-white);
 }
 
 /* Specific blocks */
@@ -1302,7 +1338,8 @@ label {
 	max-width: var(--site-width--inner);
 }
 
-.wp-block-group p {
+.wp-block-group p,
+.wp-core-block-type p {
 	max-width: var(--site-width--text);
 	margin-inline-start: 0;
 	margin-inline-end: 0;
@@ -1340,4 +1377,21 @@ label {
 .post__entry-footer {
 	display: flex;
  	gap: var(--site-global--gap);
+	padding-block-start: var(--site-global--spacing-vertical--half);
+	padding-block-end: var(--site-global--spacing-vertical);
+}
+
+/* Comments */
+.post__comments {
+	padding-block-start: var(--site-global--spacing-vertical);
+	padding-block-end: var(--site-global--spacing-vertical);
+	background-color: var(--site-global--color-basic-gray-90);
+}
+
+.comments__inner {
+	display: flex;
+	flex-direction: column;
+	gap: var(--site-global--gap);
+	max-width: var(--site-width--inner);
+	margin: 0 auto;
 }

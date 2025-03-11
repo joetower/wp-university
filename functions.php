@@ -186,11 +186,8 @@ add_filter( 'render_block', 'wp_university_add_class_to_list_block', 10, 2 );
  */
 function wp_university_add_class_to_list_block( $block_content, $block ) {
 
-		if ( strpos( $block['blockName'], 'core/' ) === 0 ) {
-			$block_content = new WP_HTML_Tag_Processor( $block_content );
-			$block_content->next_tag(); /* first tag should always be ul or ol */
-			$block_content->add_class( 'wp-core-block-type' );
-			$block_content = $block_content->get_updated_html();
-		}
-    return $block_content;
+	if ( strpos( $block['blockName'], 'core/' ) === 0 ) {
+		$block_content = '<div class="wp-core-block-type">' . $block_content . '</div>';
+	}
+	return $block_content;
 }
