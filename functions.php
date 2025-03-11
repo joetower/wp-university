@@ -175,3 +175,22 @@ require get_template_directory() . '/inc/customizer.php';
 if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
+
+add_filter( 'render_block', 'wp_university_add_class_to_list_block', 10, 2 );
+/**
+ * Add custom class to WP Core List Block so we can style it.
+ *
+ * Should not be necessary in future version of WP:
+ * @see https://github.com/WordPress/gutenberg/issues/12420
+ * @see https://github.com/WordPress/gutenberg/pull/42269
+ */
+function wp_university_add_class_to_list_block( $block_content, $block ) {
+
+		if ( strpos( $block['blockName'], 'core/' ) === 0 ) {
+			$block_content = new WP_HTML_Tag_Processor( $block_content );
+			$block_content->next_tag(); /* first tag should always be ul or ol */
+			$block_content->add_class( 'wp-core-block-type' );
+			$block_content = $block_content->get_updated_html();
+		}
+    return $block_content;
+}

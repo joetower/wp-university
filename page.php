@@ -32,8 +32,9 @@ get_header();
 			?>
 
 		</main><!-- #main -->
-		<?php get_sidebar(); ?>
 	</div><!-- .site-main__wrapper__inner -->
 </section><!-- #main__wrapper -->
+
+<?php get_template_part( 'template-parts/content', 'sidebar' ); ?>
 <?php
 get_footer();
