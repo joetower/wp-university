@@ -9,7 +9,10 @@
  * @package WP_University
  */
 
+$post_id = get_the_ID(); // or the specific post ID you are working with
+$layout_data = get_post_meta( $post_id, '_wp_university_layout_key', true );
 ?>
+
 <!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -67,3 +70,9 @@
 			</nav><!-- #site-navigation -->
 		</div><!-- .site-header__inner -->
 	</header><!-- #masthead -->
+
+	<!-- .site-main -->
+
+	<section class="site-main__wrapper" wp-layout="<?php print_r($layout_data); ?>">
+		<div class="site-main__wrapper__inner">
+			<main id="primary" class="site-main">

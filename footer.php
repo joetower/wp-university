@@ -10,7 +10,15 @@
  */
 
 ?>
+		<!--continued from the header.php file -->
+		</main><!-- #main -->
+	</div><!-- .site-main__wrapper__inner -->
+</section><!-- #primary -->
 
+<!-- sidebar -->
+<?php get_template_part( 'template-parts/content', 'sidebar' ); ?>
+
+<!-- footer -->
 	<footer id="colophon" class="site-footer">
 		<div class="site-footer__inner">
 			<div class="site-info">

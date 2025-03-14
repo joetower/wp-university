@@ -8,6 +8,15 @@
 	const siteNavigation = document.getElementById( 'site-header__navigation' );
 	const siteHeader = document.getElementById( 'masthead' );
 	const wpAdminBar = document.getElementById( 'wpadminbar' );
+	const siteSubMenu = document.querySelectorAll( '.sub-menu' );
+	const siteSubMenuButton = document.querySelectorAll('.menu-item__submenu-toggle');
+
+	// Return early if the navigation doesn't exist.
+	if ( ! siteNavigation ) {
+		return;
+	}
+
+	// Set the CSS variable --wp-university-header-height to the height of the site header.
 	siteHeaderHeight = siteHeader.offsetHeight;
 	// If the admin bar is present, add its height to the site header height.
 	if ( wpAdminBar ) {
@@ -16,11 +25,7 @@
 	// Set the CSS variable --wp-university-header-height to the height of the site header.
 	document.documentElement.style.setProperty( '--wp-university-header-height', siteHeaderHeight + 'px' );
 
-	// Return early if the navigation doesn't exist.
-	if ( ! siteNavigation ) {
-		return;
-	}
-
+	/* Mobile button */
 	const button = siteNavigation.getElementsByTagName( 'button' )[ 0 ];
 
 	// Return early if the button doesn't exist.
@@ -63,48 +68,35 @@
 		}
 	} );
 
-	// Get all the link elements within the menu.
-	const links = menu.getElementsByTagName( 'a' );
 
-	// Get all the link elements with children within the menu.
-	const linksWithChildren = menu.querySelectorAll( '.menu-item-has-children > a, .page_item_has_children > a' );
+	// For all sub-menu ul elements, add aria-hidden and tabindex attributes.
+	siteSubMenu.forEach( submenu => {
+		submenu.setAttribute( 'aria-hidden', 'true' );
+	});
+	// For all sub-menu button elements, add aria-expanded attribute.
+	siteSubMenuButton.forEach( submenuButton => {
+		submenuButton.setAttribute( 'aria-expanded', 'false' );
+	});
+	// Toggle the sub-menu when the button is clicked.
+	siteSubMenuButton.forEach( submenuButton => {
+		submenuButton.addEventListener( 'click', function() {
+			const submenu = this.nextElementSibling;
+			const expanded = this.getAttribute( 'aria-expanded' ) === 'true' || false;
 
-	// Toggle focus each time a menu link is focused or blurred.
-	for ( const link of links ) {
-		link.addEventListener( 'focus', toggleFocus, true );
-		link.addEventListener( 'blur', toggleFocus, true );
-	}
+			this.setAttribute( 'aria-expanded', ! expanded );
+			submenu.setAttribute( 'aria-hidden', expanded );
+		});
+	});
 
-	// Toggle focus each time a menu link with children receive a touch event.
-	for ( const link of linksWithChildren ) {
-		link.addEventListener( 'touchstart', toggleFocus, false );
-	}
-
-	/**
-	 * Sets or removes .focus class on an element.
-	 */
-	function toggleFocus() {
-		if ( event.type === 'focus' || event.type === 'blur' ) {
-			let self = this;
-			// Move up through the ancestors of the current link until we hit .nav-menu.
-			while ( ! self.classList.contains( 'nav-menu' ) ) {
-				// On li elements toggle the class .focus.
-				if ( 'li' === self.tagName.toLowerCase() ) {
-					self.classList.toggle( 'focus' );
-				}
-				self = self.parentNode;
+	// Close the submenu when tabbing beyond the active submenu.
+	document.addEventListener( 'focusin', function( event ) {
+		siteSubMenuButton.forEach( submenuButton => {
+			const submenu = submenuButton.nextElementSibling;
+			if ( ! submenu.contains( event.target ) && submenuButton.getAttribute( 'aria-expanded' ) === 'true' ) {
+				submenuButton.setAttribute( 'aria-expanded', 'false' );
+				submenu.setAttribute( 'aria-hidden', 'true' );
 			}
-		}
+		});
+	});
 
-		if ( event.type === 'touchstart' ) {
-			const menuItem = this.parentNode;
-			event.preventDefault();
-			for ( const link of menuItem.parentNode.children ) {
-				if ( menuItem !== link ) {
-					link.classList.remove( 'focus' );
-				}
-			}
-			menuItem.classList.toggle( 'focus' );
-		}
-	}
 }() );
