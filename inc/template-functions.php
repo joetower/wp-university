@@ -50,7 +50,7 @@ add_action( 'wp_head', 'wp_university_pingback_header' );
 function wp_university_add_submenu_button( $item_output, $item, $depth, $args ) {
 	if ( in_array( 'menu-item-has-children', $item->classes ) ) {
 		$buttonContent = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>';
-		$button = '<button class="menu-item__submenu-toggle" aria-expanded="false" aria-label="' . $item->title . ' submenu">' . __($buttonContent, 'wp_university' ) . '</button>';
+		$button = '<button class="menu-item__submenu-toggle" aria-expanded="false" data-menu-depth="' . $depth . '" aria-label="' . $item->title . ' submenu">' . __($buttonContent, 'wp_university' ) . '</button>';
 		$item_output = str_replace( '</a>', '</a>' . $button, $item_output );
 	}
 	return $item_output;
@@ -66,7 +66,7 @@ function wp_university_submenu_class( $classes, $depth ) {
 add_filter( 'nav_menu_submenu_css_class', 'wp_university_submenu_class', 10, 4 );
 
 /**
- * Add custom class to WP Core List Block so we can style it.
+ * Add custom class to WP Core List Block so we can style theme.
  *
  * Should not be necessary in future version of WP:
  * @see https://github.com/WordPress/gutenberg/issues/12420
@@ -83,6 +83,13 @@ add_filter( 'render_block', 'wp_university_add_class_to_list_block', 10, 2 );
 }
 
 // Add a custom meta box to the post editor
+// This meta box allows the user to select a layout option for the post/page
+// The selected layout option is saved as post meta data
+// The layout options are "constrained" and "wide"
+// The default layout option is "constrained"
+// The layout option is used to determine the layout of the post/page on the front end
+// The layout option is saved as post meta data with the key "_wp_university_layout_key"
+// The layout option is used to determine the layout of the post/page on the front end
 add_action( 'add_meta_boxes', 'wp_university_add_layout_meta_box' );
 function wp_university_add_layout_meta_box() {
 	add_meta_box(
@@ -139,3 +146,39 @@ function wp_university_save_layout_meta_box_data( $post_id ) {
 	$layout_data = sanitize_text_field( $_POST['wp_university_layout_field'] );
 	update_post_meta( $post_id,  '_wp_university_layout_key', $layout_data );
 }
+
+
+// Remove Gutenberg Block Library CSS from loading on the frontend
+function big_sea_starter_remove_wp_block_library_css(){
+	wp_dequeue_style( 'wp-block-library' );
+	wp_dequeue_style( 'wp-block-library-theme' );
+	wp_dequeue_style( 'wc-blocks-style' ); // Remove WooCommerce block CSS
+} 
+add_action( 'wp_enqueue_scripts', 'big_sea_starter_remove_wp_block_library_css', 100 );
+
+// Gutenberg: limit allowed blocks in post editor
+// The block editor adds too much inline CSS to the front end. We should be selective
+// about which core blocks to allow in the post editor. This allowed block list will be updated as needed.
+function big_sea_starter_allowed_post_type_blocks( $allowed_block_types, $editor_context ) {
+if ( 'post' === $editor_context->post->post_type ) {
+	return array(
+		'core/paragraph',
+		'core/image',
+		'core/heading',
+		'create-block/cta-block'
+	);
+}
+
+if ( 'page' === $editor_context->post->post_type ) {
+	return array(
+		'core/paragraph',
+		'core/image',
+		'core/heading',
+		'create-block/cta-block'
+	);
+}
+
+return $allowed_block_types;
+}
+
+add_filter( 'allowed_block_types_all', 'big_sea_starter_allowed_post_type_blocks', 10, 2 );

@@ -74,7 +74,9 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	--site-global--spacing-horizontal--half: 1rem;
 
 	--site-navigation--spacing-vertical: 0.5rem;
+	--site-navigation--spacing-vertical--half: 0.25rem;
 	--site-navigation--spacing-horizontal: 0.75rem;
+	--site-navigation--spacing-horizontal---half: 0.375rem;
 
 	--site-global--gap: 0.5rem;
 	--site-global--gap--wide: 2rem;
@@ -138,7 +140,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	--cta-width--full: var(--site-width--full);
 
 	/* Site Header */
-	--site-header--background-color: var(--site-global--color-secondary-accent-light);
+	--site-header--background-color: var(--site-global--color-secondary);
 	--site-header--background-color--accent: var(--site-global--color-primary-accent);
 }
 
@@ -829,45 +831,6 @@ textarea {
 	display: block;
 }
 
-.main-navigation ul {
-	display: none;
-	list-style: none;
-	margin: 0;
-	padding-inline-start: var(--site-navigation--spacing-horizontal);
-	padding-inline-end: var(--site-navigation--spacing-horizontal);
-}
-
-.main-navigation ul ul {
-	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-	background-color: var(--site-header--background-color);
-	border: var(--site-global--border-width--thick) solid transparent;
-	float: left;
-	position: absolute;
-	top: 100%;
-	left: auto;
-	z-index: 2;
-}
-
-.main-navigation ul ul ul {
-	left: auto;
-	top: 0;
-}
-
-.main-navigation ul ul li:hover > ul,
-.main-navigation ul ul li.focus > ul {
-	display: block;
-	left: auto;
-}
-
-.main-navigation ul ul a {
-	width: 200px;
-}
-
-.main-navigation ul li:hover > ul,
-.main-navigation ul li.focus > ul {
-	left: auto;
-}
-
 .main-navigation li {
 	position: relative;
 }
@@ -876,13 +839,55 @@ textarea {
 	display: block;
 	text-decoration: none;
 	font-weight: 600;
-	padding: var(--site-navigation--spacing-vertical) var(--site-navigation--spacing-horizontal);
+	padding: var(--site-navigation--spacing-vertical) var(--site-navigation--spacing-horizontal---half);
 	border-bottom: var(--site-global--border-width--thick) solid transparent;
 }
 
 .main-navigation a[aria-current="page"] {
 	color: var(--site-global--color-primary-accent-dark);
 	border-color: var(--site-global--color-primary-accent-dark);
+}
+
+/* level 1 */
+.main-navigation .nav-menu {
+	list-style: none;
+	margin: 0;
+}
+
+.menu-item-has-children {
+	display: flex;
+	align-items: center;
+	gap: var(--site-global--gap);
+}
+
+/* level 2 */
+.menu-item__submenu {
+	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+	background-color: var(--site-header--background-color);
+	border: var(--site-global--border-width--thick) solid transparent;
+	position: absolute;
+	top: 110%;
+	left: 0;
+	z-index: 2;
+	width: auto;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	transform: translateY(0);
+}
+@media (prefers-reduced-motion: no-preference) {
+	.menu-item__submenu {
+		transition-property: transform opacity;
+		transition-duration: .1s;
+	}
+}
+
+.menu-item__submenu .menu-item__submenu[aria-hidden="false"] {
+	position: absolute;
+}
+
+.menu-item__submenu li {
+	break-inside: avoid;
 }
 
 /* Small menu. */
@@ -896,33 +901,48 @@ textarea {
   background: transparent;
   padding: 0;
   color: inherit;
+	cursor: pointer;
 }
 
 .menu-item__submenu-toggle svg {
 	width: 1.5rem;
 	height: 1.5rem;
-	fill: var(--site-global--color-primary-accent-dark)
+	fill: var(--site-global--color-primary-accent-dark);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.menu-item__submenu-toggle svg {
+		transition: rotate 0.2s ease-in-out;
+	}
 }
 
 .menu-item__submenu-toggle[aria-expanded="true"] svg {
 	fill: var(--site-global--color-primary-accent);
-	rotate: 180deg;
-	transition: rotate 0.2s ease-in-out;
+	rotate: -180deg;
+}
+
+.menu-item__submenu[data-position="left"] {
+	left: 0;
+	right: auto;
+}
+
+.menu-item__submenu[data-position="right"] {
+	right: 0;
+	left: auto;
 }
 
 .menu-item__submenu[aria-hidden="true"] {
-	display: none;
+	visibility: hidden;
+	transform: translateY(100%);
+	opacity: .5;
 }
 
 .menu-item__submenu[aria-hidden="false"] {
-	display: block;
 	border-color: var(--site-header--background-color--accent);
-}
-
-.menu-item-has-children {
-	display: flex;
-	align-items: center;
-	gap: var(--site-global--gap);
+	position: absolute;
+	width: auto;
+	transform: translateY(0);
+	opacity: 1;
 }
 
 @media screen and (min-width: 37.5em) {
@@ -931,9 +951,9 @@ textarea {
 		display: none;
 	}
 
-	.main-navigation ul {
+	.main-navigation .nav-menu {
 		display: flex;
-		gap: var(--site-navigation--spacing-horizontal);
+		gap: var(--site-global--gap--wide);
 	}
 }
 
@@ -950,6 +970,7 @@ textarea {
 	padding-block-start: var(--site-global--spacing-vertical);
 	padding-block-end: var(--site-global--spacing-vertical);
 }
+
 .comment-navigation .nav-links,
 .posts-navigation .nav-links,
 .post-navigation .nav-links {
@@ -1312,10 +1333,18 @@ label {
 		width: 100%;
 		z-index: 2;
 		background-color: var(--site-global--color-basic-white);
+		display: none;
+		padding: 0;
 	}
 
 	.toggled #primary-menu {
+		display: block;
 		border-bottom: var(--site-global--border-width--thickest) solid var(--site-global--color-primary-accent-dark);
+	}
+
+	.menu-item__submenu {
+		width: 100%;
+		columns: 1;
 	}
 }
 
