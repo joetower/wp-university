@@ -142,10 +142,8 @@ SiteNav = ( () => {
 				}
 			});
 		}
-	});
-
-	// Close the submenu when the escape key is pressed.
-	document.addEventListener('keydown', (event) => {
+	
+		// Close the submenu when the escape key is pressed.
 		if (event.key === 'Escape') {
 			console.log('Escape key pressed');
 			siteSubMenuButton.forEach(submenuButton => {

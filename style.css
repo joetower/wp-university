@@ -934,7 +934,7 @@ textarea {
 .menu-item__submenu[aria-hidden="true"] {
 	visibility: hidden;
 	transform: translateY(100%);
-	opacity: .5;
+	opacity: 0;
 }
 
 .menu-item__submenu[aria-hidden="false"] {
